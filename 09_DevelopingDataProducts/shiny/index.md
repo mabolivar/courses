@@ -1,9 +1,10 @@
 ---
 title       : Shiny
 subtitle    : Data Products
-author      : Brian Caffo, Jeff Leek, Roger Peng
-job         : Johns Hopkins Bloomberg School of Public Health
-logo        : bloomberg_shield.png
+author      : Manuel A. Bolivar (Senior Data Scientist, IBM)
+job         : Adapted from Brian Caffo, Jeff Leek, Roger Peng (Johns Hopkins Bloomberg School of Public Health)
+aaaaa
+logo        : 
 framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
 highlighter : highlight.js  # {highlight.js, prettify, highlight}
 hitheme     : tomorrow      # 
@@ -32,32 +33,11 @@ mode        : selfcontained # {standalone, draft}
 - Shiny uses [bootstrap](http://getbootstrap.com/) (no relation to the statistics bootstrap) style, which (to me) seems to look nice and renders well on mobile platforms
 
 ---
-## What else is out there?
-- Creating any solution requiring fairly deep knowledge of web client/server programming
-- [OpenCPU](https://public.opencpu.org/) by Jerome Ooms, is a really neat project providing an API for calling R from web documents
-  - And he even hosts an OpenCPU server, but you can create your own
-
----
-## Context
-- You created a novel prediction algorithm to predict risk for developing
-  diabetes.
-    - You're hoping patients and caregivers will be able to enter their data and, if needed, take preventative measures.
-- You want to create a web site so that users can input the relevant predictors and obtain their prediction.
-- Your prediction algorithm (ok, so you're not going to be saving the world with this one)
-  - [link for a real prediction score](http://www.ncbi.nlm.nih.gov/pubmed/12610029)
-
-```r
-diabetesRisk <- function(glucose) glucose/200
-```
-
-
-
----
 ## Getting started
 - Make sure you have the latest release of R installed
 - If on windows, make sure that you have Rtools installed
 - `install.packages("shiny")`
-- `libray(shiny)`
+- `library(shiny)`
 - Great tutorial at 
 [http://rstudio.github.io/shiny/tutorial/](http://rstudio.github.io/shiny/tutorial/)
 - Basically, this lecture is walking through that tutorial offering some of our insights
@@ -103,6 +83,76 @@ shinyServer(
 
 ---
 ![simplestApp](fig/simplestApp.png "First Shiny app")
+
+---
+## Let's build our prediction function
+
+How many miles per gallon my car runs?
+
+
+```r
+data(mtcars)
+head(mtcars)
+```
+
+```
+##                    mpg cyl disp  hp drat    wt  qsec vs am gear carb
+## Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
+## Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
+## Datsun 710        22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
+## Hornet 4 Drive    21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
+## Hornet Sportabout 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
+## Valiant           18.1   6  225 105 2.76 3.460 20.22  1  0    3    1
+```
+
+
+```r
+lm1 <- lm(mpg ~ wt + cyl + am, data = mtcars)
+```
+
+---
+## Tighter control over style
+- All of the style elements are handled through ui.R
+- Instead, you can create a www directory and then an index.html file in that directory
+  - [This link](http://rstudio.github.io/shiny/tutorial/#html-ui) goes through the html needed
+  - You just have to have specific js libraries and appropriately name ids and classes. This is beyond the scope of this class
+  - For students with a lot of experience in html, js, css it would be a breeze and probably easier and more flexible than the R html controls in ui.R
+
+---
+## Other things Shiny can do
+- Allow users to upload or download files
+- Have tabbed main panels
+- Have editable data tables
+- Have a dynamic UI
+- User defined inputs and outputs 
+- Put a submit button so that Shiny only executes complex code after user hits submit
+
+
+---
+## Distributing a Shiny app
+- The quickest way is to send (or put on github or gist or dropbox or whatever) someone the app directory and they can then call `runApp`
+- You could create an R package and create a wrapper that calls `runApp`  
+  - Of course, these solutions only work if the user knows R
+- Another option is to run a shiny server
+  - Requires setting up a (Shiny server)[http://www.rstudio.com/shiny/server/]
+    - Probably easiest if you use one of the virtual machines where they already have Shiny servers running well (for example, on AWS)
+  - Setting up a Shiny server is beyond the scope of this class as it involves some amount of linux server administration
+  - Groups are creating a Shiny hosting services that will presumably eventually be a fee for service or freemium service
+  - BTW, don't put system calls in your code (this is one of the first things many of us do for fun, but it introduces security concerns)
+
+
+---
+## Resources
+
++ [Shiny cheatsheet](http://shiny.rstudio.com/images/shiny-cheatsheet.pdf)
++ [How to build a user interface](http://shiny.rstudio.com/tutorial/lesson2/)
++ [How to add control widgets](http://shiny.rstudio.com/tutorial/lesson3/)
++ [Widget gallery](http://shiny.rstudio.com/gallery/widget-gallery.htmlStyle yout apps with)
++ [Style your apps with CSS](http://shiny.rstudio.com/articles/css.html)
+
+---
+## Other examples
+
 
 ---
 ## R functions for HTML markup
@@ -184,6 +234,19 @@ shinyServer(
 
 ---
 ## Let's build our prediction function
+
+---
+## Context
+- You created a novel prediction algorithm to predict risk for developing
+  diabetes.
+    - You're hoping patients and caregivers will be able to enter their data and, if needed, take preventative measures.
+- You want to create a web site so that users can input the relevant predictors and obtain their prediction.
+- Your prediction algorithm (ok, so you're not going to be saving the world with this one)
+  - [link for a real prediction score](http://www.ncbi.nlm.nih.gov/pubmed/12610029)
+
+```r
+diabetesRisk <- function(glucose) glucose / 200
+```
 
 ---
 ## 
@@ -269,34 +332,3 @@ shinyServer(
 ---
 ## The output
 <img src="fig/examplePlot.png" style="width: 900px;"/>
-
----
-## Tighter control over style
-- All of the style elements are handled through ui.R
-- Instead, you can create a www directory and then an index.html file in that directory
-  - [This link](http://rstudio.github.io/shiny/tutorial/#html-ui) goes through the html needed
-  - You just have to have specific js libraries and appropriately name ids and classes. This is beyond the scope of this class
-  - For students with a lot of experience in html, js, css it would be a breeze and probably easier and more flexible than the R html controls in ui.R
-
----
-## Other things Shiny can do
-- Allow users to upload or download files
-- Have tabbed main panels
-- Have editable data tables
-- Have a dynamic UI
-- User defined inputs and outputs 
-- Put a submit button so that Shiny only executes complex code after user hits submit
-
-
----
-## Distributing a Shiny app
-- The quickest way is to send (or put on github or gist or dropbox or whatever) someone the app directory and they can then call `runApp`
-- You could create an R package and create a wrapper that calls `runApp`  
-  - Of course, these solutions only work if the user knows R
-- Another option is to run a shiny server
-  - Requires setting up a (Shiny server)[http://www.rstudio.com/shiny/server/]
-    - Probably easiest if you use one of the virtual machines where they already have Shiny servers running well (for example, on AWS)
-  - Setting up a Shiny server is beyond the scope of this class as it involves some amount of linux server administration
-  - Groups are creating a Shiny hosting services that will presumably eventually be a fee for service or freemium service
-  - BTW, don't put system calls in your code (this is one of the first things many of us do for fun, but it introduces security concerns)
-
